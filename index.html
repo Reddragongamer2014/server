@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="apple-touch-icon" href="logo192.png">
+    <meta name="theme-color" content="#ff3e3e">
+    
+    <title>Red Dragon Gaming Official - Dashboard</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: #0f1218;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            color: #e1e7ed;
+            padding-bottom: 40px;
+        }
+
+        /* --- TOP NAVBAR --- */
+        .navbar {
+            background-color: #161b22;
+            border-bottom: 1px solid #222933;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 30px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .brand-logo {
+            width: 42px;
+            height: 42px;
+            border-radius: 8px;
+            object-fit: cover;
+            border: 1px solid #ff3e3e;
+        }
+
+        .brand-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #fff;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 10px;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: #8b949e;
+            text-decoration: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .nav-link.active, .nav-link:hover {
+            background: #21262d;
+            color: #ff3e3e;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .action-btn {
+            color: white;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            padding: 9px 18px;
+            border-radius: 6px;
+            transition: transform 0.2s ease, opacity 0.2s ease;
+        }
+
+        .action-btn:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
+        }
+
+        .btn-mods {
+            background: linear-gradient(135deg, #ff3e3e, #d32f2f);
+            box-shadow: 0 0 10px rgba(255, 62, 62, 0.3);
+        }
+
+        .btn-discord {
+            background: #5865F2;
+        }
+
+        /* --- DASHBOARD LAYOUT --- */
+        .dashboard-container {
+            max-width: 1400px;
+            margin: 25px auto 0 auto;
+            padding: 0 20px;
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 25px;
+        }
+
+        @media (max-width: 1024px) {
+            .dashboard-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 800;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #ffffff;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* --- GAMES & FEATURED GRID --- */
+        .featured-games-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        @media (max-width: 768px) {
+            .featured-games-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .game-card {
+            position: relative;
+            background: #161b22;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid #222933;
+            min-height: 180px;
+            display: flex;
+            align-items: flex-end;
+            padding: 15px;
+            background-size: cover;
+            background-position: center;
+            transition: border-color 0.3s ease, transform 0.3s ease;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .game-card:hover {
+            border-color: #ff3e3e;
+            transform: translateY(-3px);
+        }
+
+        .game-card-overlay {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(to top, rgba(15, 18, 24, 0.95), transparent);
+        }
+
+        .game-card-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .game-card-title {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .game-card-sub {
+            font-size: 0.8rem;
+            color: #ff3e3e;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        /* --- CONTENT TABS & VIDEO GRID --- */
+        .tab-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #222933;
+            padding-bottom: 10px;
+        }
+
+        .tab-btn {
+            background: #161b22;
+            color: #8b949e;
+            border: 1px solid #222933;
+            padding: 8px 20px;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active, .tab-btn:hover {
+            background: #ff3e3e;
+            color: white;
+            border-color: #ff3e3e;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .video-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 18px;
+        }
+
+        .video-card {
+            background: #161b22;
+            border: 1px solid #222933;
+            border-radius: 10px;
+            padding: 10px;
+            transition: all 0.3s ease;
+        }
+
+        .video-card:hover {
+            border-color: #ff3e3e;
+            transform: translateY(-3px);
+        }
+
+        .video-thumbnail-wrapper {
+            position: relative;
+            width: 100%;
+            border-radius: 6px;
+            overflow: hidden;
+            background: #000;
+            cursor: pointer;
+        }
+
+        #shorts-section .video-thumbnail-wrapper, 
+        #shorts-section iframe {
+            height: 320px;
+        }
+
+        #videos-section .video-thumbnail-wrapper, 
+        #videos-section iframe {
+            aspect-ratio: 16 / 9;
+        }
+
+        .video-thumbnail-wrapper img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .play-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 62, 62, 0.9);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1rem;
+        }
+
+        .video-title {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #e1e7ed;
+            line-height: 1.3;
+        }
+
+        /* --- SIDEBAR COMPONENTS --- */
+        .sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .widget-card {
+            background: #161b22;
+            border: 1px solid #222933;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        /* Profile Widget */
+        .profile-widget {
+            text-align: center;
+        }
+
+        .profile-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            border: 2px solid #ff3e3e;
+            margin: 0 auto 10px auto;
+            object-fit: cover;
+        }
+
+        .profile-name {
+            font-size: 1.1rem;
+            font-weight: 800;
+            color: #fff;
+        }
+
+        .profile-role {
+            font-size: 0.75rem;
+            color: #ff3e3e;
+            font-weight: 700;
+            text-transform: uppercase;
+            margin-bottom: 15px;
+        }
+
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            border-top: 1px solid #222933;
+            padding-top: 12px;
+            margin-bottom: 15px;
+        }
+
+        .stat-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-val {
+            font-weight: 800;
+            color: #fff;
+            font-size: 0.95rem;
+        }
+
+        .stat-lbl {
+            font-size: 0.7rem;
+            color: #8b949e;
+            text-transform: uppercase;
+        }
+
+        /* News Widget */
+        .news-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .news-item {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            padding: 8px;
+            border-radius: 8px;
+            background: #0f1218;
+            text-decoration: none;
+            color: inherit;
+            transition: background 0.2s ease;
+        }
+
+        .news-item:hover {
+            background: #1c212a;
+        }
+
+        .news-thumb {
+            width: 55px;
+            height: 55px;
+            border-radius: 6px;
+            object-fit: cover;
+        }
+
+        .news-text {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .news-item-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #fff;
+            line-height: 1.2;
+        }
+
+        .news-item-date {
+            font-size: 0.7rem;
+            color: #8b949e;
+            margin-top: 3px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- TOP NAVBAR -->
+    <header class="navbar">
+        <div class="nav-left">
+            <img src="logo.jpg" class="brand-logo" alt="Logo">
+            <div class="brand-title">Red Dragon Gaming Official</div>
+            <ul class="nav-links">
+                <li><a href="#" class="nav-link active"> Main Hub</a></li>
+                <li><a href="https://gta-mods-archive.netlify.app" target="_blank" class="nav-link">GTA Mods Archive</a></li>
+            </ul>
+        </div>
+        <div class="nav-right">
+            <a href="https://discord.com/invite/8QUfZMvg" target="_blank" class="action-btn btn-discord">Discord Community</a>
+            <a href="https://gta-mods-archive.netlify.app" target="_blank" class="action-btn btn-mods">GTA Mods Archive</a>
+        </div>
+    </header>
+
+    <!-- DASHBOARD CONTAINER -->
+    <div class="dashboard-container">
+
+        <!-- LEFT MAIN COLUMN -->
+        <main class="main-content">
+            
+            <!-- FEATURED GAMES SECTION -->
+            <div class="section-title">
+                <span>Games posted</span>
+            </div>
+            <div class="featured-games-grid">
+                
+                <!-- 1. GTA Series (Display Only Card) -->
+                <div class="game-card" style="background-image: url('GTA.png'); cursor: default;">
+                    <div class="game-card-overlay"></div>
+                    <div class="game-card-content">
+                        <div class="game-card-sub">Showcase</div>
+                        <div class="game-card-title">GTA Series</div>
+                    </div>
+                </div>
+
+                <!-- 2. ScarFall 2.0 (Play Store Android / Web Link) -->
+                <div class="game-card" onclick="openScarfall()" style="background-image: url('SF2.0.jpg');">
+                    <div class="game-card-overlay"></div>
+                    <div class="game-card-content">
+                        <div class="game-card-sub">Get Game</div>
+                        <div class="game-card-title">ScarFall 2.0</div>
+                    </div>
+                </div>
+
+                <!-- 3. Minecraft (Smart Detect: Android Play Store vs PC Microsoft Store) -->
+                <div class="game-card" onclick="openMinecraft()" style="background-image: url('MC.jpg');">
+                    <div class="game-card-overlay"></div>
+                    <div class="game-card-content">
+                        <div class="game-card-sub">Get Game</div>
+                        <div class="game-card-title">Minecraft</div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- MEDIA GALLERY SECTION -->
+            <div class="section-title">
+                <span>Media Vault</span>
+            </div>
+            
+            <div class="tab-bar">
+                <button class="tab-btn active" onclick="switchTab('shorts-section', this)">My Shorts HUB</button>
+                <button class="tab-btn" onclick="switchTab('videos-section', this)">My Videos HUB</button>
+            </div>
+
+            <!-- TAB 1: SHORTS -->
+            <div id="shorts-section" class="tab-content active">
+                <div class="video-grid" id="shorts-container">
+                    <p style="text-align:center; color:#8b949e; grid-column: 1/-1;">Loading Shorts gallery...</p>
+                </div>
+            </div>
+
+            <!-- TAB 2: VIDEOS -->
+            <div id="videos-section" class="tab-content">
+                <div class="video-grid" id="videos-container">
+                    <p style="text-align:center; color:#8b949e; grid-column: 1/-1;">Loading Videos gallery...</p>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- RIGHT SIDEBAR COLUMN -->
+        <aside class="sidebar">
+
+            <!-- PROFILE WIDGET -->
+            <div class="widget-card profile-widget">
+                <img src="logo.jpg" class="profile-avatar" alt="Avatar">
+                <div class="profile-name">Red Dragon Gaming Official</div>
+                <div class="profile-role">Official Creator</div>
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <span class="stat-val">Active</span>
+                        <span class="stat-lbl">Status</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-val">Live</span>
+                        <span class="stat-lbl">Feed</span>
+                    </div>
+                </div>
+                <a href="https://www.youtube.com/@reddragongamingOfficial" target="_blank" class="action-btn btn-mods" style="display:block; text-align:center;">Visit Channel</a>
+            </div>
+
+            <!-- NEWS & UPDATES WIDGET -->
+            <div class="widget-card">
+                <div class="section-title" style="font-size:1rem; margin-bottom:12px;">Recent Updates</div>
+                <div class="news-list">
+                    <a href="https://gta-mods-archive.netlify.app" target="_blank" class="news-item">
+                        <img src="archive.png" class="news-thumb" alt="News">
+                        <div class="news-text">
+                            <span class="news-item-title">GTA Mods Hub Updated</span>
+                            <span class="news-item-date">Repository Live</span>
+                        </div>
+                    </a>
+                    <a href="https://discord.com/invite/8QUfZMvg" target="_blank" class="news-item">
+                        <img src="discord.jpg" class="news-thumb" alt="News">
+                        <div class="news-text">
+                            <span class="news-item-title">Join Discord Community</span>
+                            <span class="news-item-date">Active Server</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+        </aside>
+
+    </div>
+
+    <!-- DYNAMIC DATA & SMART REDIRECT SCRIPT -->
+    <script>
+        // SMART GAME STORE LINKING
+        function openScarfall() {
+            window.open("https://play.google.com/store/apps/details?id=com.xsquad.scarfall2", "_blank");
+        }
+
+        function openMinecraft() {
+            const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+            
+            if (isMobile) {
+                // Android / Mobile Play Store
+                window.open("https://play.google.com/store/apps/details?id=com.mojang.minecraftpe", "_blank");
+            } else {
+                // PC / Windows Microsoft Store Link
+                window.open("https://minecraft.net", "_blank");
+            }
+        }
+
+        // EMBED YOUTUBE VIDEO ON CLICK
+        function playVideo(container, videoId) {
+            container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen style="width:100%; border-radius:6px; border:none; background:#000;"></iframe>`;
+        }
+
+        // FETCH VIDEOS AUTOMATICALLY FROM NETLIFY EXPRESS SERVER
+        async function loadContentFromNetlifyServer() {
+            const shortsContainer = document.getElementById('shorts-container');
+            const videosContainer = document.getElementById('videos-container');
+
+            try {
+                // Call your Netlify Express API endpoint
+                const response = await fetch('/api/youtube');
+                const data = await response.json();
+
+                if (data.success && data.videos.length > 0) {
+                    let shortsHTML = '';
+                    let videosHTML = '';
+
+                    data.videos.forEach(video => {
+                        const cardHTML = `
+                            <div class="video-card">
+                                <div class="video-thumbnail-wrapper" onclick="playVideo(this, '${video.videoId}')">
+                                    <img src="${video.thumbnail}" alt="${video.title}">
+                                    <div class="play-overlay">▶</div>
+                                </div>
+                                <div class="video-title">${video.title}</div>
+                            </div>
+                        `;
+
+                        // Categorize: Check if title contains #shorts or type is short
+                        if (video.type === 'short' || video.title.toLowerCase().includes('#shorts')) {
+                            shortsHTML += cardHTML;
+                        } else {
+                            videosHTML += cardHTML;
+                        }
+                    });
+
+                    shortsContainer.innerHTML = shortsHTML || '<p style="text-align:center; color:#8b949e; grid-column:1/-1;">No Shorts found.</p>';
+                    videosContainer.innerHTML = videosHTML || '<p style="text-align:center; color:#8b949e; grid-column:1/-1;">No Videos found.</p>';
+                } else {
+                    shortsContainer.innerHTML = '<p style="text-align:center; color:#8b949e; grid-column:1/-1;">No videos loaded. Check Netlify API keys.</p>';
+                    videosContainer.innerHTML = '<p style="text-align:center; color:#8b949e; grid-column:1/-1;">No videos loaded. Check Netlify API keys.</p>';
+                }
+
+            } catch (err) {
+                console.error("Error loading gallery data:", err);
+                shortsContainer.innerHTML = '<p style="text-align:center; color:#8b949e; grid-column:1/-1;">Error connecting to Netlify server.</p>';
+                videosContainer.innerHTML = '<p style="text-align:center; color:#8b949e; grid-column:1/-1;">Error connecting to Netlify server.</p>';
+            }
+        }
+
+        window.addEventListener('DOMContentLoaded', loadContentFromNetlifyServer);
+
+        // TAB SWITCHING LOGIC
+        function switchTab(sectionId, clickedButton) {
+            const contents = document.querySelectorAll('.tab-content');
+            contents.forEach(content => content.classList.remove('active'));
+
+            const buttons = document.querySelectorAll('.tab-btn');
+            buttons.forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById(sectionId).classList.add('active');
+            clickedButton.classList.add('active');
+        }
+    </script>
+</body>
+</html>
