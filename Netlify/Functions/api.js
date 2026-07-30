@@ -4,39 +4,33 @@ const app = express();
 
 app.use(express.json());
 
-// Pull credentials securely from Netlify Environment Variables
-const YOUTUBE_API_KEY = process.env.YOUTUBE_API_KEY;
-const CHANNEL_ID = process.env.CHANNEL_ID;
+// Only your YouTube Channel ID is needed! (No API key required)
+const CHANNEL_ID = process.env.CHANNEL_ID || "UCbb9WfRAITNLVYUuCar-VjQ";
 
-// --- API ENDPOINT FOR FRONTEND ---
 app.get('/api/youtube', async (req, res) => {
-    if (!YOUTUBE_API_KEY || !CHANNEL_ID) {
-        return res.status(500).json({
-            success: false,
-            message: "Missing YOUTUBE_API_KEY or CHANNEL_ID in Netlify settings."
-        });
-    }
-
     try {
-        // Fetch the 15 latest videos from your YouTube channel
-        const fetchUrl = `https://www.googleapis.com/youtube/v3/search?key=${YOUTUBE_API_KEY}&channelId=${CHANNEL_ID}&part=snippet,id&order=date&maxResults=15&type=video`;
-        const response = await fetch(fetchUrl);
-        const data = await response.json();
+        // Fetch official public RSS Feed from YouTube
+        const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
+        const response = await fetch(rssUrl);
+        const xmlText = await response.text();
 
-        if (!data.items) {
-            return res.status(400).json({ 
-                success: false, 
-                message: "Failed to pull videos from YouTube API." 
-            });
-        }
+        // Extract video IDs and Titles using regex (no heavy XML library needed)
+        const entries = xmlText.match(/<entry>[\s\S]*?<\/entry>/g) || [];
+        
+        const videos = entries.slice(0, 15).map(entry => {
+            const videoIdMatch = entry.match(/<yt:videoId>(.*?)<\/yt:videoId>/);
+            const titleMatch = entry.match(/<title>(.*?)<\/title>/);
 
-        // Format items specifically for your frontend JS script
-        const videos = data.items.map(item => ({
-            title: item.snippet.title,
-            videoId: item.id.videoId,
-            thumbnail: item.snippet.thumbnails.high ? item.snippet.thumbnails.high.url : item.snippet.thumbnails.default.url,
-            type: item.snippet.title.toLowerCase().includes('#shorts') ? 'short' : 'video'
-        }));
+            const videoId = videoIdMatch ? videoIdMatch[1] : '';
+            const title = titleMatch ? titleMatch[1] : '';
+
+            return {
+                title: title,
+                videoId: videoId,
+                thumbnail: `https://img.youtube.com/vi/${videoId}/hqdefault.jpg`,
+                type: title.toLowerCase().includes('#shorts') ? 'short' : 'video'
+            };
+        });
 
         res.json({ success: true, videos });
     } catch (error) {
@@ -44,5 +38,4 @@ app.get('/api/youtube', async (req, res) => {
     }
 });
 
-// Wrap Express app for Netlify Serverless Functions
 module.exports.handler = serverless(app);
