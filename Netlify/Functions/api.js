@@ -1,20 +1,24 @@
 const express = require('express');
+const cors = require('cors');
 const serverless = require('serverless-http');
+
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
-// Only your YouTube Channel ID is needed! (No API key required)
 const CHANNEL_ID = process.env.CHANNEL_ID || "UCbb9WfRAITNLVYUuCar-VjQ";
 
 app.get('/api/youtube', async (req, res) => {
     try {
-        // Fetch official public RSS Feed from YouTube
         const rssUrl = `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
         const response = await fetch(rssUrl);
-        const xmlText = await response.text();
+        
+        if (!response.ok) {
+            throw new Error(`YouTube RSS request failed with status ${response.status}`);
+        }
 
-        // Extract video IDs and Titles using regex (no heavy XML library needed)
+        const xmlText = await response.text();
         const entries = xmlText.match(/<entry>[\s\S]*?<\/entry>/g) || [];
         
         const videos = entries.slice(0, 15).map(entry => {
@@ -34,8 +38,8 @@ app.get('/api/youtube', async (req, res) => {
 
         res.json({ success: true, videos });
     } catch (error) {
+        console.error("Backend Error:", error.message);
         res.status(500).json({ success: false, error: error.message });
     }
 });
-
 module.exports.handler = serverless(app);
