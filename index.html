@@ -262,13 +262,11 @@
             cursor: pointer;
         }
 
-        #shorts-section .video-thumbnail-wrapper, 
-        #shorts-section iframe {
+        #shorts-section .video-thumbnail-wrapper {
             height: 320px;
         }
 
-        #videos-section .video-thumbnail-wrapper, 
-        #videos-section iframe {
+        #videos-section .video-thumbnail-wrapper {
             aspect-ratio: 16 / 9;
         }
 
@@ -426,7 +424,7 @@
             <img src="logo.jpg" class="brand-logo" alt="Logo">
             <div class="brand-title">Red Dragon Gaming Official</div>
             <ul class="nav-links">
-                <li><a href="#" class="nav-link active"> Main Hub</a></li>
+                <li><a href="#" class="nav-link active">Main Hub</a></li>
                 <li><a href="https://gta-mods-archive.netlify.app" target="_blank" class="nav-link">GTA Mods Archive</a></li>
             </ul>
         </div>
@@ -568,9 +566,16 @@
             }
         }
 
-        // EMBED YOUTUBE VIDEO ON CLICK
+        // EMBED YOUTUBE VIDEO ON CLICK (Fixed for responsive dimensions)
         function playVideo(container, videoId) {
-            container.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}?autoplay=1" allow="autoplay; encrypted-media" allowfullscreen style="width:100%; border-radius:6px; border:none; background:#000;"></iframe>`;
+            container.innerHTML = `
+                <iframe 
+                    src="https://www.youtube.com/embed/${videoId}?autoplay=1" 
+                    allow="autoplay; encrypted-media" 
+                    allowfullscreen 
+                    style="width:100%; height:100%; border-radius:6px; border:none; background:#000;">
+                </iframe>
+            `;
         }
 
         // FETCH VIDEOS AUTOMATICALLY FROM NETLIFY EXPRESS SERVER
